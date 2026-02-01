@@ -1,0 +1,6 @@
+@Tricket.Api_HostAddress = http://localhost:5243
+
+GET {{Tricket.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
