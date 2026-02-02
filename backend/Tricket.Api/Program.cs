@@ -7,6 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// frontend dev server calls this API 
+var frontendOrigin = "http://localhost:5173";
+var corsPolicyName = "FrontendDevPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicyName, policy =>
+    {
+        policy.WithOrigins(frontendOrigin)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddControllers();
 
@@ -15,7 +27,7 @@ builder.Services.AddDbContext<TricketDbContext>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// configure the HTTP request pipeline, swagger in development environment
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -26,6 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(corsPolicyName);
 app.UseAuthorization();
 app.MapControllers();
 
